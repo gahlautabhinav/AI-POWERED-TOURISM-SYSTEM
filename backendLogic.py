@@ -1,23 +1,41 @@
 # backendLogic.py
 
+import os
+import gdown
 import pandas as pd
 import joblib
 from geopy.distance import geodesic
 from sklearn.metrics.pairwise import cosine_similarity
 from datetime import timedelta, datetime
 
-# Load data once
+# --------- Model Downloader ---------
+def download_models():
+    model_folder = "models"
+    os.makedirs(model_folder, exist_ok=True)
+
+    files = {
+        "budget_predictor.pkl": "1uO-Xyn8oXd_ThfuxMpjQCkNdpItia6yl",      # Replace with real ID
+        "collab_knn_model.pkl": "1B8feCqUNYDCJ5USNDwgVLR9QTGf-Maf0"     # Replace with real ID
+    }
+
+    for fname, fid in files.items():
+        path = os.path.join(model_folder, fname)
+        if not os.path.exists(path):
+            print(f"Downloading {fname}...")
+            gdown.download(f"https://drive.google.com/uc?id={fid}", path, quiet=False)
+
+download_models()
+
+# --------- Load Data and Models ---------
 DATA_PATH = "cleaned_tourism_dataset.csv"
 df = pd.read_csv(DATA_PATH)
 df.fillna("", inplace=True)
 df.columns = df.columns.str.strip()
 
-# Load trained models
 vectorizer = joblib.load("models/tfidf_vectorizer.pkl")
 mood_model = joblib.load("models/mood_classifier.pkl")
 budget_model = joblib.load("models/budget_predictor.pkl")
 
-# Pre-compute tf-idf
 df["combined"] = df["description"]
 tfidf_matrix = vectorizer.transform(df["combined"])
 
@@ -45,11 +63,8 @@ def recommend_places(user_text, location_coords=None, moods=None, budget=None, t
         budget = predict_budget(user_text)
 
     df_loc = df.copy()
-
-    # Only keep places with valid coordinates
     df_loc = df_loc[(df_loc["lat"] != 0) & (df_loc["lng"] != 0)]
 
-    # Calculate distance, travel time, total time
     coords = df_loc[["lat", "lng"]].values
     distances = [geodesic(location_coords, (lat, lng)).km for lat, lng in coords]
     travel_times = [d / 30 for d in distances]
@@ -59,7 +74,6 @@ def recommend_places(user_text, location_coords=None, moods=None, budget=None, t
     df_loc["travel_time_hr"] = travel_times
     df_loc["total_time_hr"] = total_times
 
-    # Filter by time constraint
     df_loc = df_loc[df_loc["total_time_hr"] <= time_hr]
     if df_loc.empty:
         return pd.DataFrame(), pd.DataFrame()
