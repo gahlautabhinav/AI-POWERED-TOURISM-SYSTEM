@@ -51,7 +51,7 @@ def recommend_places(user_text, location_coords=None, moods=None, budget=None, t
     from geopy.geocoders import Nominatim
 
     if location_coords is None:
-        geolocator = Nominatim(user_agent="smart_tourism_app")
+        geolocator = Nominatim(user_agent="smart_tourism_app", timeout=10)
         loc = geolocator.geocode(user_text)
         if loc is None:
             return pd.DataFrame(), pd.DataFrame()
