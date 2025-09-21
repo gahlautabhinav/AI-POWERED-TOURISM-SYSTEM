@@ -27,7 +27,7 @@ def download_models():
 download_models()
 
 # --------- Load Data and Models ---------
-DATA_PATH = "cleaned_tourism_dataset.csv"
+DATA_PATH = "GJ_RJ_dataset.csv"
 df = pd.read_csv(DATA_PATH)
 df.fillna("", inplace=True)
 df.columns = df.columns.str.strip()
@@ -165,3 +165,4 @@ def create_itinerary(user_location, tourist_df, food_df, total_time_hr=4, start_
             food_inserted = True
 
     return itinerary
+
