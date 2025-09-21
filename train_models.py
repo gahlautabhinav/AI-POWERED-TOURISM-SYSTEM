@@ -15,7 +15,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.ensemble import RandomForestRegressor
 
 # ----------------- Load & Prepare Dataset -----------------
-df = pd.read_csv('cleaned_tourism_dataset.csv')
+df = pd.read_csv('GJ_RJ_dataset.csv')
 df.columns = df.columns.str.strip()
 df.dropna(subset=['name', 'rating', 'lat', 'lng', 'reviews'], inplace=True)
 df.fillna("", inplace=True)
