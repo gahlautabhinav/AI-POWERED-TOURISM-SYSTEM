@@ -14,8 +14,8 @@ def download_models():
     os.makedirs(model_folder, exist_ok=True)
 
     files = {
-        "budget_predictor.pkl": "1uO-Xyn8oXd_ThfuxMpjQCkNdpItia6yl",      # Replace with real ID
-        "collab_knn_model.pkl": "1B8feCqUNYDCJ5USNDwgVLR9QTGf-Maf0"     # Replace with real ID
+        "budget_predictor.pkl": "1JDlimaIcs9ksDAqgFJeFQlG3kjIPLoxh",
+        "collab_knn_model.pkl": "1DifyEw7c7W9ooc5NHkymHpS7cDMd21WB"
     }
 
     for fname, fid in files.items():
@@ -165,4 +165,5 @@ def create_itinerary(user_location, tourist_df, food_df, total_time_hr=4, start_
             food_inserted = True
 
     return itinerary
+
 
